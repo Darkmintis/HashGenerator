@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HashGenerator - Professional Hash Generation Tool</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%2310b981' d='M464 256a208 208 0 1 0-416 0 208 208 0 1 0 416 0zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm169.8-90.7c-5.3-4.8-13.6-4.4-18.4 .9s-4.4 13.6 .9 18.4l64 58.7c4.5 4.1 11.2 4.1 15.7 0l64-58.7c5.3-4.8 5.7-13.1 .9-18.4s-13.1-5.7-18.4-.9l-56.1 51.5-52.7-51.5z'/%3E%3C/svg%3E" type="image/svg+xml">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="platform" id="app-body">
+    <!-- Platform Header -->
+    <header class="platform-header">
+        <div class="header-left">
+            <h1 class="platform-title"><i class="fas fa-shield-alt"></i> HashGenerator</h1>
+            <p class="platform-subtitle">Professional Hash Generation Tool</p>
+        </div>
+        <div class="header-right">
+            <button id="themeToggle" class="theme-toggle" title="Toggle Theme">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="gen-container">
+        <!-- Statistics -->
+        <div class="stats-row" id="statsDisplay">
+            <div class="stat-card">
+                <span class="stat-value" id="totalGenerated">0</span>
+                <div class="stat-label">Hashes Generated</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value" id="hashesPerSecond">0</span>
+                <div class="stat-label">Hashes/Second</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value" id="uniqueAlgorithms">0</span>
+                <div class="stat-label">Algorithms Used</div>
+            </div>
+        </div>
+
+        <!-- Main Layout: Two Column Design -->
+        <div class="main-layout">
+            <!-- Left Column: Input and Results -->
+            <div class="left-column">
+                <!-- Input Section -->
+                <div class="input-section">
+                    <div class="input-group">
+                        <label for="textInput" class="input-label">
+                            <i class="fas fa-keyboard"></i> Enter Text to Hash
+                        </label>
+                        <textarea id="textInput" 
+                               class="text-input" 
+                               placeholder="Enter text to hash..."
+                               rows="3"></textarea>
+                        <div id="passwordStrength" class="password-strength-meter hidden">
+                            <div class="strength-bar">
+                                <div class="strength-indicator" id="strengthIndicator"></div>
+                            </div>
+                            <div class="strength-text" id="strengthText">Password Strength: Not Evaluated</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results Section -->
+                <div class="results-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-clipboard-check"></i> Generated Hash</h3>
+                    </div>
+                    
+                    <div class="result-display" id="resultDisplay">
+                        <div class="result-placeholder">Enter text and select an algorithm to generate a hash</div>
+                    </div>
+                    
+                    <div class="actions-row">
+                        <button id="copyBtn" class="action-button" disabled>
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                        <button id="saveBtn" class="action-button" disabled>
+                            <i class="fas fa-save"></i> Save to History
+                        </button>
+                        <button id="clearBtn" class="action-button secondary">
+                            <i class="fas fa-eraser"></i> Clear
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Column: Algorithms and Options -->
+            <div class="right-column">
+                <!-- Algorithm Selection -->
+                <div class="algorithm-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-cog"></i> Select Hash Algorithm</h3>
+                    </div>
+                    
+                    <div class="algorithm-tabs">
+                        <button class="tab-button active" data-tab="basic">Basic</button>
+                        <button class="tab-button" data-tab="password">Password</button>
+                        <button class="tab-button" data-tab="modern">Modern</button>
+                        <button class="tab-button" data-tab="special">Special</button>
+                    </div>
+                    
+                    <div class="algorithm-content">
+                        <div class="tab-content active" id="basic-tab">
+                            <div class="algorithm-grid" id="basicAlgorithms">
+                                <!-- Will be populated from config -->
+                            </div>
+                        </div>
+                        <div class="tab-content" id="password-tab">
+                            <div class="algorithm-grid" id="passwordAlgorithms">
+                                <!-- Will be populated from config -->
+                            </div>
+                        </div>
+                        <div class="tab-content" id="modern-tab">
+                            <div class="algorithm-grid" id="modernAlgorithms">
+                                <!-- Will be populated from config -->
+                            </div>
+                        </div>
+                        <div class="tab-content" id="special-tab">
+                            <div class="algorithm-grid" id="specialAlgorithms">
+                                <!-- Will be populated from config -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Options Section - Compact Version -->
+                <div class="options-section compact" id="optionsSection">
+                    <div class="section-header">
+                        <h3><i class="fas fa-sliders-h"></i> Hash Options</h3>
+                    </div>
+                    
+                    <div class="options-content">
+                        <div class="options-grid">
+                            <!-- Salt Option -->
+                            <div class="option-group" id="saltGroup">
+                                <label class="option-label">
+                                    <i class="fas fa-salt-shaker"></i> Salt Value
+                                </label>
+                                <div class="salt-input-group">
+                                    <input type="text" id="saltInput" class="option-input" placeholder="Enter salt...">
+                                    <button class="salt-generate-btn" id="generateSalt" title="Generate Random Salt">
+                                        <i class="fas fa-dice"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Iterations Option (for PBKDF2) -->
+                            <div class="option-group" id="iterationsGroup">
+                                <label class="option-label">
+                                    <i class="fas fa-redo"></i> Iterations
+                                </label>
+                                <input type="number" id="iterationsInput" class="option-input" value="10000" min="1">
+                            </div>
+                            
+                            <!-- Cost Factor (for bcrypt) -->
+                            <div class="option-group" id="costFactorGroup">
+                                <label class="option-label">
+                                    <i class="fas fa-tachometer-alt"></i> Cost Factor
+                                </label>
+                                <div class="cost-factor-row">
+                                    <input type="range" id="costFactorRange" class="cost-slider" min="4" max="16" value="10">
+                                    <span id="costFactorValue">10</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Output Format -->
+                            <div class="option-group">
+                                <label class="option-label">
+                                    <i class="fas fa-file-code"></i> Output Format
+                                </label>
+                                <select id="outputFormat" class="option-select">
+                                    <option value="hex" selected>Hexadecimal</option>
+                                    <option value="base64">Base64</option>
+                                    <option value="standard">Standard Format</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Upper/Lower case option -->
+                            <div class="option-group">
+                                <label class="option-label">
+                                    <i class="fas fa-font"></i> Character Case
+                                </label>
+                                <select id="characterCase" class="option-select">
+                                    <option value="lowercase" selected>Lowercase</option>
+                                    <option value="uppercase">Uppercase</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hash History - Below main layout -->
+        <div class="history-section" id="historySection">
+            <div class="section-header">
+                <h3><i class="fas fa-history"></i> Hash History</h3>
+                <button class="toggle-history active" id="toggleHistory" title="Toggle History">
+                    <i class="fas fa-chevron-up"></i>
+                </button>
+            </div>
+            
+            <div class="history-content">
+                <table class="history-table" id="historyTable">
+                    <thead>
+                        <tr>
+                            <th>Input Text</th>
+                            <th>Algorithm</th>
+                            <th>Hash</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody">
+                        <!-- Will be populated with history items -->
+                    </tbody>
+                </table>
+                <div id="noHistoryMessage" class="no-history-message">
+                    <i class="fas fa-info-circle"></i>
+                    <p>No hash history yet. Generate hashes and save them to see them here.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notificationContainer"></div>
+
+    <!-- Scripts -->
+    <script src="config.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="js/hash-generator.js"></script>
+    <script src="js/offline.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
