@@ -329,9 +329,6 @@ h6 { font-size: 1rem; }
     box-shadow: var(--shadow-md);
     transition: background-color var(--transition-base);
     height: 100%;
-}
-
-.history-section {
     margin-bottom: var(--space-md);
 }
 
