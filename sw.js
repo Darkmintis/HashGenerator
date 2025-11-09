@@ -7,7 +7,7 @@ const CACHE_NAME = 'hashgenerator-v1';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
-  '/css/style.css',
+  '/style.css',
   '/js/app.js',
   '/js/hash-generator.js',
   '/js/offline.js',
@@ -18,18 +18,18 @@ const ASSETS_TO_CACHE = [
 ];
 
 // Install event - cache assets
-self.addEventListener('install', event => {
+globalThis.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
         return cache.addAll(ASSETS_TO_CACHE);
       })
-      .then(() => self.skipWaiting())
+      .then(() => globalThis.skipWaiting())
   );
 });
 
 // Activate event - clean old caches
-self.addEventListener('activate', event => {
+globalThis.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys()
       .then(cacheNames => {
@@ -41,12 +41,12 @@ self.addEventListener('activate', event => {
           })
         );
       })
-      .then(() => self.clients.claim())
+      .then(() => globalThis.clients.claim())
   );
 });
 
 // Fetch event - serve from cache or network
-self.addEventListener('fetch', event => {
+globalThis.addEventListener('fetch', event => {
   // Skip non-GET requests
   if (event.request.method !== 'GET') return;
   
@@ -68,7 +68,7 @@ self.addEventListener('fetch', event => {
         return fetch(event.request)
           .then(networkResponse => {
             // Cache a copy of the response if it's valid
-            if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
+            if (networkResponse?.status === 200 && networkResponse?.type === 'basic') {
               const responseToCache = networkResponse.clone();
               caches.open(CACHE_NAME)
                 .then(cache => {

@@ -10,8 +10,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
+    <!-- Base URL for subdirectory deployment -->
+    <base href="/hashgenerator/">
+
     <!-- Styles -->
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body class="platform" id="app-body">
     <!-- Platform Header -->
@@ -141,7 +144,7 @@
                         <div class="options-grid">
                             <!-- Salt Option -->
                             <div class="option-group" id="saltGroup">
-                                <label class="option-label">
+                                <label class="option-label" for="saltInput">
                                     <i class="fas fa-salt-shaker"></i> Salt Value
                                 </label>
                                 <div class="salt-input-group">
@@ -154,7 +157,7 @@
                             
                             <!-- Iterations Option (for PBKDF2) -->
                             <div class="option-group" id="iterationsGroup">
-                                <label class="option-label">
+                                <label class="option-label" for="iterationsInput">
                                     <i class="fas fa-redo"></i> Iterations
                                 </label>
                                 <input type="number" id="iterationsInput" class="option-input" value="10000" min="1">
@@ -162,7 +165,7 @@
                             
                             <!-- Cost Factor (for bcrypt) -->
                             <div class="option-group" id="costFactorGroup">
-                                <label class="option-label">
+                                <label class="option-label" for="costFactorRange">
                                     <i class="fas fa-tachometer-alt"></i> Cost Factor
                                 </label>
                                 <div class="cost-factor-row">
@@ -173,7 +176,7 @@
                             
                             <!-- Output Format -->
                             <div class="option-group">
-                                <label class="option-label">
+                                <label class="option-label" for="outputFormat">
                                     <i class="fas fa-file-code"></i> Output Format
                                 </label>
                                 <select id="outputFormat" class="option-select">
@@ -185,7 +188,7 @@
                             
                             <!-- Upper/Lower case option -->
                             <div class="option-group">
-                                <label class="option-label">
+                                <label class="option-label" for="characterCase">
                                     <i class="fas fa-font"></i> Character Case
                                 </label>
                                 <select id="characterCase" class="option-select">

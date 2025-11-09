@@ -1,0 +1,90 @@
+name: Deploy HashGenerator to darkmintis-dev
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout HashGenerator repository
+        uses: actions/checkout@v4
+
+      - name: Checkout darkmintis-dev
+        uses: actions/checkout@v4
+        with:
+          repository: Darkmintis/darkmintis-dev
+          token: ${{ secrets.DEPLOY_PAT }}
+          path: main-repo
+
+      - name: Copy production files to main repo
+        run: |
+          # Remove old deployment
+          rm -rf main-repo/dist/hashgenerator
+          mkdir -p main-repo/dist/hashgenerator
+
+          # Copy only production files
+          cp index.html main-repo/dist/hashgenerator/
+          cp config.js main-repo/dist/hashgenerator/
+          cp style.css main-repo/dist/hashgenerator/
+          cp sw.js main-repo/dist/hashgenerator/
+          cp -r js main-repo/dist/hashgenerator/
+          cp LICENSE main-repo/dist/hashgenerator/
+          cp README.md main-repo/dist/hashgenerator/
+
+          # Copy .gitignore if exists
+          [ -f .gitignore ] && cp .gitignore main-repo/dist/hashgenerator/ || true
+
+          echo "✅ Production files copied successfully"
+          echo "📦 Deployed files:"
+          ls -la main-repo/dist/hashgenerator/
+
+      - name: Commit and push to darkmintis-dev
+        run: |
+          cd main-repo
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          
+          # Add changes
+          git add dist/hashgenerator/
+          
+          # Commit only if there are changes
+          if git diff --staged --quiet; then
+            echo "ℹ️ No changes to deploy"
+          else
+            git commit -m "🔄 Update HashGenerator from commit ${GITHUB_SHA:0:7}"
+            git push
+            echo "✅ Changes pushed successfully"
+          fi
+
+      - name: Deployment summary
+        run: |
+          echo "## 🎉 Deployment Complete!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Tool**: HashGenerator - Professional Hash Generation Tool" >> $GITHUB_STEP_SUMMARY
+          echo "- **Live URL**: https://darkmintis.dev/hashgenerator" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit**: \`${GITHUB_SHA:0:7}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Triggered by**: ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Time**: $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📦 Deployed Files" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ index.html" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ config.js" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ style.css" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ sw.js (service worker)" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ js/ (hash-generator.js, app.js, offline.js)" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ LICENSE" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ README.md" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔐 Features Deployed" >> $GITHUB_STEP_SUMMARY
+          echo "- 🚀 Client-side hash generation" >> $GITHUB_STEP_SUMMARY
+          echo "- 🔍 25+ hash algorithm support" >> $GITHUB_STEP_SUMMARY
+          echo "- 🎯 Multiple output formats" >> $GITHUB_STEP_SUMMARY
+          echo "- 🔒 Password strength analysis" >> $GITHUB_STEP_SUMMARY
+          echo "- 🎨 Modern responsive UI" >> $GITHUB_STEP_SUMMARY
+          echo "- 💾 Offline-capable PWA" >> $GITHUB_STEP_SUMMARY
+
